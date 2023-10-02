@@ -1,0 +1,10 @@
+{
+  "id": "1d44f96e-712d-415d-b12a-188c0529a412",
+  "name": "Запись на прием",
+  "commands": [
+    {
+      "name": "start",
+      "sequence": "587b116c-9f45-4ed4-be12-f3e049e7761e.sequence.json"
+    }
+  ]
+}

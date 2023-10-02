@@ -1,0 +1,302 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://digital-assistant-script.ru/0.2.0/scenario.schema.json",
+  "description": "Схема сценария взаимодействия цифрового помощника",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "commands"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "идентификатор сценария",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "Название сценария"
+    },
+    "commands": {
+      "$ref": "#/$def/commands"
+    },
+    "sequences": {
+      "description": "Глобальные последовательности",
+      "type": "array",
+      "items": {
+        "$ref": "#/$def/sequence"
+      }
+    },
+    "variables": {
+      "type": "array",
+      "description": "Переменные, доступные для использования в сценарии",
+      "items": {
+        "$ref": "#/$def/variable"
+      }
+    }
+  },
+  "$def": {
+    "commands": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$def/command"
+      }
+    },
+    "command": {
+      "description": "Команда помощнику",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Имя команды"
+        },
+        "sequence": {
+          "$ref": "#/$def/sequence"
+        }
+      }
+    },
+    "sequence": {
+      "oneOf": [
+        {
+          "description": "URI последовательности",
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "description": "Последовательность действий помощника",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Идентификатор последовательности",
+              "format": "uuid"
+            },
+            "acts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$def/act"
+              }
+            },
+            "variables": {
+              "description": "Локальные переменные",
+              "type": "array",
+              "items": {
+                "$ref": "#/$def/variable"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "variable": {
+      "description": "Переменная сценария",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Имя переменной"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "integer",
+            "number",
+            "string",
+            "boolean"
+          ],
+          "description": "Тип переменной"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "Значение переменной"
+        }
+      }
+    },
+    "act": {
+      "description": "Операция помощника",
+      "oneOf": [
+        {
+          "$ref": "#/$def/message"
+        },
+        {
+          "$ref": "#/$def/context"
+        },
+        {
+          "$ref": "#/$def/selection"
+        },
+        {
+          "$ref": "#/$def/sequenceCycle"
+        }
+      ]
+    },
+    "context": {
+      "description": "Управление контекстом",
+      "oneOf": [
+        {
+          "description": "Массив значений переменных",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Имя переменной"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ],
+                "description": "Значение переменной"
+              }
+            }
+          }
+        },
+        {
+          "description": "Изменение контекста во внешнем сервисе",
+          "type": "object",
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "description": "Внешняя конечная точка, которая принимает всю совокупность переменных сценария и возвращает измененный контекст"
+            }
+          }
+        }
+      ]
+    },
+    "message": {
+      "description": "Сообщение пользователю",
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "$ref": "#/$def/messageTemplate"
+        },
+        "choices": {
+          "oneOf": [
+            {
+              "$ref": "#/$def/choices"
+            },
+            {
+              "$ref": "#/$def/choiceList"
+            }
+          ]
+        },
+        "files": {
+          "$ref": "#/$def/messageFiles"
+        }
+      }
+    },
+    "messageFiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$def/messageFile"
+      }
+    },
+    "messageFile": {
+      "url": {
+        "type": "string",
+        "description": "расположение файла",
+        "format": "uri"
+      },
+      "ext": {
+        "type": "string",
+        "description": "тип файла"
+      }
+    },
+    "messageTemplate": {
+      "type": "string",
+      "description": "Шаблон сообщения клиенту; может содержать переменные, указанные с приставкой $"
+    },
+    "choices": {
+      "type": "array",
+      "description": "Список вариантов для выбора клиенту, заданный вручную",
+      "items": {
+        "$ref": "#/$def/choice"
+      }
+    },
+    "choiceList": {
+      "type": "object",
+      "description": "Список вариантов для выбора клиенту, заданный через переменную",
+      "required": [
+        "each"
+      ],
+      "properties": {
+        "each": {
+          "type": "string",
+          "description": "Имя переменной типа ключ-значение"
+        },
+        "choice": {
+          "description": "Шаблон варианта выбора, в котором можно использовать переменные цикла $key и $value. При отсутствии шаблона text = значение переменной, value = ключ",
+          "$ref": "#/$def/choice"
+        }
+      }
+    },
+    "choice": {
+      "description": "Вариант выбора, предоставляемый клиенту",
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Название выбора, отображаемое клиенту"
+        },
+        "value": {
+          "type": "string",
+          "description": "Значение, которое присваивается $reply.value при выборе клиентом этого варианта"
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "description": "Действия по условию",
+      "properties": {
+        "if": {
+          "type": "string",
+          "description": "Условное выражение с кванторами & - и, | - или, сравнение <, >, =; блок условия выделяется скобками; если сравнение происходит с числом, то значение переменной преобразуется в число. пример, ( a = 'b' & c > 2 ) | ( d < 3 & e )"
+        },
+        "then": {
+          "$ref": "#/$def/sequence"
+        },
+        "else": {
+          "$ref": "#/$def/sequence"
+        }
+      }
+    },
+    "sequenceCycle": {
+      "description": "Цикл последовательности",
+      "type": "object",
+      "properties": {
+        "each": {
+          "type": "string",
+          "description": "Имя переменной"
+        },
+        "sequence": {
+          "$ref": "#/$def/sequence"
+        }
+      }
+    }
+  }
+}

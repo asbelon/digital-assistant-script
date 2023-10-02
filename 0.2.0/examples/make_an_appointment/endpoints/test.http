@@ -1,0 +1,19 @@
+### Запрос списка специалистов
+POST http://127.0.0.1:5000/specialists
+Content-Type: application/json
+
+
+### Запрос на доступные даты
+POST http://127.0.0.1:5000/specialist/date_list
+Content-Type: application/json
+
+[
+{
+  "name": "ВыбранныйСпециалист",
+  "value": "0"
+},
+{
+  "name": "ВыбраннаяУслуга",
+  "value": "0"
+}
+]
