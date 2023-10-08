@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://digital-assistant-script.ru/0.2.0/sequence.schema.json",
+  "description": "Последовательность актов сценария цифрового помощника",
+  "oneOf": [
+    {
+      "description": "URI последовательности",
+      "type": "string",
+      "format": "uri"
+    },
+    {
+      "description": "Последовательность действий помощника",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Идентификатор последовательности",
+          "format": "uuid"
+        },
+        "acts": {
+          "type": "array",
+          "items": {
+            "$ref": "https://digital-assistant-script.ru/0.2.0/scenario.schema.json#/$def/act"
+          }
+        },
+        "context": {
+          "description": "Локальные переменные",
+          "type": "array",
+          "items": {
+            "$ref": "https://digital-assistant-script.ru/0.2.0/scenario.schema.json#/$def/variable"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

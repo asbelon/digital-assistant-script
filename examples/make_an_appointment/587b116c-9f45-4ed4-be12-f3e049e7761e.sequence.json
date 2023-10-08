@@ -19,15 +19,13 @@
       ]
     }
   ],
-  "variables": [
+  "context": [
     {
       "name": "ДаНет[да]",
-      "type": "string",
       "value": "Да"
     },
     {
       "name": "ДаНет[нет]",
-      "type": "string",
       "value": "Нет"
     }
   ]

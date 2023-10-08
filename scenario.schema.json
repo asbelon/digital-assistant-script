@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://digital-assistant-script.ru/0.2.0/scenario.schema.json",
-  "description": "Схема сценария взаимодействия цифрового помощника",
+  "description": "Сценарий взаимодействия цифрового помощника",
   "type": "object",
   "required": [
     "id",
@@ -28,7 +28,7 @@
         "$ref": "#/$def/sequence"
       }
     },
-    "variables": {
+    "context": {
       "type": "array",
       "description": "Переменные, доступные для использования в сценарии",
       "items": {
@@ -97,16 +97,6 @@
           "type": "string",
           "description": "Имя переменной"
         },
-        "type": {
-          "type": "string",
-          "enum": [
-            "integer",
-            "number",
-            "string",
-            "boolean"
-          ],
-          "description": "Тип переменной"
-        },
         "value": {
           "anyOf": [
             {
@@ -121,11 +111,16 @@
           ],
           "description": "Значение переменной"
         }
-      }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "additionalProperties": false
     },
     "act": {
       "description": "Операция помощника",
-      "oneOf": [
+      "anyOf": [
         {
           "$ref": "#/$def/message"
         },
