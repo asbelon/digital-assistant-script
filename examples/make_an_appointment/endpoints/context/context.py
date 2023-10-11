@@ -1,6 +1,7 @@
 import json
 import re
 
+
 def assign_value_to_variable(var, var_key, var_value=None, is_assign=False):
     if type(var) is not dict:
         var = dict()
@@ -69,13 +70,10 @@ class Context:
                 var = var.get(n)
         return var
 
-    def to_list(self):
-        pass
-
 
 if __name__ == "__main__":
     with open('./context.json', encoding='utf-8') as f:
         context = Context(json.load(f))
-        var_list = parse_var_to_list(context.variables)
-        print(json.dumps(var_list, ensure_ascii=False, indent=True))
+        vars_list = parse_var_to_list(context.variables)
+        print(json.dumps(vars_list, ensure_ascii=False, indent=True))
         print(json.dumps(context.variables, ensure_ascii=False, indent=True))
