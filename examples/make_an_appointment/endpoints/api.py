@@ -1,56 +1,17 @@
+import json
+
 from flask import Flask, jsonify
+
+from context.context import Context, parse_var_to_list
 
 app = Flask(__name__)
 
 
 @app.route("/specialists", methods=['POST'])
 def get_specialists():
-    specialist_list = [
-        {
-            "name": "Услуги[0][Имя]",
-            "value": "Консультация"
-        },
-        {
-            "name": "Услуги[0][Стоимость]",
-            "value": "500 р"
-        },
-        {
-            "name": "Услуги[0][Специалисты][0][ФИО]",
-            "value": "Соколова Алиса Андреевна"
-        },
-        {
-            "name": "Услуги[0][Специалисты][1][ФИО]",
-            "value": "Сорокина Василиса Фёдоровна"
-        },
-        {
-            "name": "Услуги[1][Имя]",
-            "value": "Педикюр"
-        },
-        {
-            "name": "Услуги[1][Стоимость]",
-            "value": "от 700 р"
-        },
-        {
-            "name": "Услуги[1][Специалисты][0][ФИО]",
-            "value": "Константинова Елизавета Григорьевна"
-        },
-        {
-            "name": "Услуги[1][Специалисты][1][ФИО]",
-            "value": "Николаева Ника Максимовна"
-        },
-        {
-            "name": "Услуги[2][Имя]",
-            "value": "Маникюр"
-        },
-        {
-            "name": "Услуги[2][Стоимость]",
-            "value": "от 800 р"
-        },
-        {
-            "name": "Услуги[2][Специалисты][0]",
-            "value": "Евдокимова Ульяна Ильинична"
-        }
-    ]
+    with open('./context.json', encoding='utf-8') as f:
+        context = Context(json.load(f))
+        specialist_list = parse_var_to_list(context.variables)
     return jsonify(specialist_list)
 
 
