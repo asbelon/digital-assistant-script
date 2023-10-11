@@ -72,7 +72,7 @@ class Context:
 
 
 if __name__ == "__main__":
-    with open('./context.json', encoding='utf-8') as f:
+    with open('./../context.json', encoding='utf-8') as f:
         context = Context(json.load(f))
         vars_list = parse_var_to_list(context.variables)
         print(json.dumps(vars_list, ensure_ascii=False, indent=True))
