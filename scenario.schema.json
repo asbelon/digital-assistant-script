@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://digital-assistant-script.ru/0.2.0/scenario.schema.json",
+  "$id": "https://digital-assistant-script.ru/0.3.0/scenario.schema.json",
   "description": "Сценарий взаимодействия цифрового помощника",
   "type": "object",
   "required": [
@@ -21,16 +21,9 @@
     "commands": {
       "$ref": "#/$def/commands"
     },
-    "sequences": {
-      "description": "Глобальные последовательности",
-      "type": "array",
-      "items": {
-        "$ref": "#/$def/sequence"
-      }
-    },
     "context": {
       "type": "array",
-      "description": "Переменные, доступные для использования в сценарии",
+      "description": "Глобальные переменные, доступные для использования в сценарии",
       "items": {
         "$ref": "#/$def/variable"
       }

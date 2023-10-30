@@ -1,0 +1,32 @@
+{
+  "id": "ec2e8d2e-f14e-4fd3-bdeb-cd9f2f957950",
+  "acts": [
+    {
+      "message": "Здравствуйте, хотите сообщить о проблеме?",
+      "choices": {
+        "each": "ДаНет"
+      }
+    },
+    {
+      "if": "$$reply[choice][value] = да",
+      "then": "107bc8ab-b748-4552-9a87-9a1b9e2c3c5c.sequence.json",
+      "else": [
+        {
+          "message": {
+            "template": "Благодарим за обращение"
+          }
+        }
+      ]
+    }
+  ],
+  "context": [
+    {
+      "name": "ДаНет[да]",
+      "value": "Да"
+    },
+    {
+      "name": "ДаНет[нет]",
+      "value": "Нет"
+    }
+  ]
+}

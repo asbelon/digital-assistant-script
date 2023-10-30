@@ -1,0 +1,10 @@
+{
+  "id": "44d1fee4-3ef2-4ca7-a749-e3ced631f2f7",
+  "name": "Обработка жалоб",
+  "commands": [
+    {
+      "name": "start",
+      "sequence": "ec2e8d2e-f14e-4fd3-bdeb-cd9f2f957950.sequence.json"
+    }
+  ]
+}
