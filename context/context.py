@@ -89,7 +89,6 @@ if __name__ == "__main__":
             context_reload = Context()
 
             for v in vars_list:
-                print(v)
                 context_reload.set(v.get("name"), v.get("value"))
             with open('./context_reload.json', 'w', encoding='utf-8') as file:
                 json.dump(context_reload.variables, file, ensure_ascii=False, indent=4)
