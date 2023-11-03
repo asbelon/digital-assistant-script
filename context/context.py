@@ -15,14 +15,17 @@ def assign_value_to_variable(var, var_key, var_value=None, is_assign=False):
     return var[var_key]
 
 
+pattern = re.compile(r'\[([а-яА-Яa-zA-Z0-9_]+)]')
+
+
 def parse_var_name(var_name):
-    return var_name.split('[', 1)[0], re.findall(r'\[([а-яА-Яa-zA-Z0-9_]+)]', var_name)
+    return var_name.split('[', 1)[0], pattern.findall(var_name)
 
 
 def create_var_name(path):
     name = path.pop(0)
     for p in path:
-        name = name + '[' + p + ']'
+        name = f'{name}[{p}]'
     return name
 
 
@@ -43,11 +46,14 @@ def parse_var_to_list(var, path=None, var_list=None):
 
 
 class Context:
-    variables = dict()
+    variables: dict
 
-    def __init__(self, variables=None):
+    def __init__(self, variables=None, ctx: "Context" = None):
+        self.parent = ctx
         if type(variables) is dict:
             self.variables = variables
+        else:
+            self.variables = dict()
 
     def set(self, var_name, var_value):
         main, add = parse_var_name(var_name)
@@ -72,8 +78,18 @@ class Context:
 
 
 if __name__ == "__main__":
-    with open('./../context.json', encoding='utf-8') as f:
+    with open('./context.json', encoding='utf-8') as f:
         context = Context(json.load(f))
         vars_list = parse_var_to_list(context.variables)
-        print(json.dumps(vars_list, ensure_ascii=False, indent=True))
-        print(json.dumps(context.variables, ensure_ascii=False, indent=True))
+        # print(json.dumps(vars_list, ensure_ascii=False, indent=True))
+        # print(json.dumps(context.variables, ensure_ascii=False, indent=True))
+
+        with open('./variable.json', 'w', encoding='utf-8') as outfile:
+            json.dump(vars_list, outfile, ensure_ascii=False, indent=4)
+            context_reload = Context()
+
+            for v in vars_list:
+                print(v)
+                context_reload.set(v.get("name"), v.get("value"))
+            with open('./context_reload.json', 'w', encoding='utf-8') as file:
+                json.dump(context_reload.variables, file, ensure_ascii=False, indent=4)
