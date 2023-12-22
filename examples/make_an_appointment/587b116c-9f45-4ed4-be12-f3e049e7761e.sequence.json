@@ -12,9 +12,7 @@
       "then": "8726ad27-8b53-4ee3-92ca-edd5e97c6ea1.sequence.json",
       "else": [
         {
-          "message": {
-            "template": "Благодарим за обращение"
-          }
+          "message": "Благодарим за обращение"
         }
       ]
     }
