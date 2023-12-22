@@ -1,6 +1,8 @@
 id: 8726ad27-8b53-4ee3-92ca-edd5e97c6ea1
 acts:
 - endpoint: http://127.0.0.1:5000/specialists
+  out:
+    - Услуги
 - message: Какая услуга вас интересует?
   choices:
     each: $Услуги
@@ -16,6 +18,10 @@ acts:
 - - name: ВыбранныйСпециалист
     value: $$choice[value]
 - endpoint: http://127.0.0.1:5000/specialist/date_list
+  in:
+    - ВыбранныйСпециалист
+  out:
+    - ДоступныеДаты
 - message: Выберите дату
   choices:
     each: ДоступныеДаты
