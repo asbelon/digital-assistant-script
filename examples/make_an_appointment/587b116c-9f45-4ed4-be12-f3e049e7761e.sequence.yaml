@@ -1,0 +1,14 @@
+id: 587b116c-9f45-4ed4-be12-f3e049e7761e
+acts:
+- message: Здравствуйте. Хотите записаться на прием в компанию "Наш косметолог"?
+  choices:
+    each: ДаНет
+- if: $$reply[choice][value] = да
+  then: 8726ad27-8b53-4ee3-92ca-edd5e97c6ea1.sequence.json
+  else:
+  - message: Благодарим за обращение
+context:
+- name: ДаНет[да]
+  value: Да
+- name: ДаНет[нет]
+  value: Нет

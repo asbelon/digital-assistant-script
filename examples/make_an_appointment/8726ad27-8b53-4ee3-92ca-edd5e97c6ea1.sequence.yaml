@@ -1,0 +1,29 @@
+id: 8726ad27-8b53-4ee3-92ca-edd5e97c6ea1
+acts:
+- endpoint: http://127.0.0.1:5000/specialists
+- message: Какая услуга вас интересует?
+  choices:
+    each: $Услуги
+    choice:
+      text: $$choice[value][Имя]
+- - name: ВыбраннаяУслуга
+    value: $$reply[choice][value]
+- message: Выберите специалиста
+  choices:
+    each: $ВыбраннаяУслуга[Специалисты]
+    choice:
+      text: $$choice[value][ФИО]
+- - name: ВыбранныйСпециалист
+    value: $$choice[value]
+- endpoint: http://127.0.0.1:5000/specialist/date_list
+- message: Выберите дату
+  choices:
+    each: ДоступныеДаты
+- - name: ВыбраннаяДата
+    value: $$choice[value]
+- message: Как ваше имя?
+- - name: Имя
+    value: $$reply[message]
+- message: $Имя, Вы выбрали услугу $Услуги[$ВыбраннаяУслуга][Имя] и специалиста $Услуги[$ВыбраннаяУслуга][Специалисты][$ВыбранныйСпециалист][ФИО]. Дата приема ДоступныеДаты[$ВыбраннаяДата]. Верно?
+  choices:
+    each: ДаНет
