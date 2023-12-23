@@ -1,9 +1,13 @@
 import json
 import re
+from pathlib import Path
+from typing import Any
+
+pattern = re.compile(r'\[([а-яА-Яa-zA-Z0-9_]+)]')
 
 
-def assign_value_to_variable(var, var_key, var_value=None, is_assign=False):
-    if type(var) is not dict:
+def assign_value_to_variable(var: dict, var_key: str, var_value=None, is_assign=False):
+    if not var:
         var = dict()
 
     if is_assign:
@@ -13,9 +17,6 @@ def assign_value_to_variable(var, var_key, var_value=None, is_assign=False):
             var[var_key] = dict()
 
     return var[var_key]
-
-
-pattern = re.compile(r'\[([а-яА-Яa-zA-Z0-9_]+)]')
 
 
 def parse_var_name(var_name):
@@ -29,31 +30,54 @@ def create_var_name(path):
     return name
 
 
-def parse_var_to_list(var, path=None, var_list=None):
-    if path is None: path = []
-    if var_list is None: var_list = []
-    if type(var) is dict:
+def parse_var_to_list(var: dict | str | int, path: list = None):
+    if path is None:
+        path = []
+
+    if isinstance(var, dict):
         for k in var:
             copied_path = path.copy()
             copied_path.append(k)
-            var_list = parse_var_to_list(var[k], copied_path, var_list)
+            yield from parse_var_to_list(var[k], copied_path)
     else:
-        var_list.append({
+        yield {
             "name": create_var_name(path),
             "value": var
-        })
-    return var_list
+        }
+
+
+class ContextError(Exception):
+    pass
+
+
+class ParseError(ContextError):
+    pass
 
 
 class Context:
     variables: dict
 
-    def __init__(self, variables=None, ctx: "Context" = None):
+    def __init__(self, variables: dict | None = None, ctx: "Context" = None):
         self.parent = ctx
-        if type(variables) is dict:
+        if isinstance(variables, dict):
             self.variables = variables
         else:
             self.variables = dict()
+
+    @classmethod
+    def load_from_file(cls, file_path: str | Path):
+        """Загрузить из файла"""
+        try:
+            with open(file_path, "r", encoding='utf-8') as f:
+                data = json.load(f)
+        except json.JSONDecodeError as e:
+            raise ParseError('Parse error') from e
+        return cls(data)
+
+    def dump_to_file(self, file_path: str | Path, **kwargs):
+        """Сохранить в файл"""
+        with open(file_path, "w", encoding='utf-8') as f:
+            json.dump(self, f, ensure_ascii=False, indent=4, default=str, **kwargs)
 
     def set(self, var_name, var_value):
         main, add = parse_var_name(var_name)
@@ -67,14 +91,25 @@ class Context:
             else:
                 var = assign_value_to_variable(var, r)
 
-    def get(self, var_name):
+    def get(self, var_name, default=None):
         main, add = parse_var_name(var_name)
-        var = None
-        if main in self.variables:
+        try:
             var = self.variables[main]
             for n in add:
                 var = var.get(n)
-        return var
+        except KeyError:
+            return default
+        else:
+            return var
+
+    def __iter__(self):
+        return parse_var_to_list(self.variables)
+
+    def __getitem__(self, name: str):
+        return self.get(name)
+
+    def __setitem__(self, name: str, value: Any):
+        self.set(name, value)
 
 
 if __name__ == "__main__":
